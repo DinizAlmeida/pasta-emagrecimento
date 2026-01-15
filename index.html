@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1b34" />
+  <title>Pasta do Emagrecimento • Premium</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+
+  <style>
+    :root{
+      --bg:#061024;
+      --card:#0b1b34;
+      --text:#eaf1ff;
+      --muted:#9fb2d6;
+      --accent:#d4af37;
+      --ok:#4ee3a5;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --border: rgba(255,255,255,.09);
+      --shadow: 0 14px 34px rgba(0,0,0,.42);
+      --radius:22px;
+      --glass: rgba(255,255,255,.05);
+      --glass2: rgba(255,255,255,.03);
+      --chip: rgba(0,0,0,.25);
+    }
+    [data-theme="light"]{
+      --bg:#f2f6ff;
+      --card:#ffffff;
+      --text:#0b1633;
+      --muted:#4a5a77;
+      --accent:#b59121;
+      --ok:#1aa56a;
+      --warn:#d4a212;
+      --bad:#e04545;
+      --border: rgba(13,30,60,.12);
+      --shadow: 0 10px 24px rgba(13,30,60,.12);
+      --glass: rgba(13,30,60,.05);
+      --glass2: rgba(13,30,60,.03);
+      --chip: rgba(13,30,60,.08);
+    }
+
+    *{box-sizing:border-box}
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 650px at 12% 0%, rgba(212,175,55,.12), transparent 55%),
+        radial-gradient(1000px 600px at 92% 12%, rgba(110,200,255,.14), transparent 55%),
+        radial-gradient(900px 520px at 55% 95%, rgba(145,110,255,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    header{
+      position:sticky; top:0;
+      z-index:12;
+      padding:14px 14px 12px;
+      background: linear-gradient(180deg, rgba(6,16,36,.92), rgba(6,16,36,.60));
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid var(--border);
+    }
+    [data-theme="light"] header{
+      background: linear-gradient(180deg, rgba(242,246,255,.92), rgba(242,246,255,.60));
+    }
+    .topline{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      max-width: 980px; margin:0 auto;
+    }
+    .brand{ display:flex; align-items:center; gap:12px; min-width:0; }
+    .logo{
+      width:44px; height:44px; border-radius:16px;
+      display:grid; place-items:center;
+      background: linear-gradient(135deg, rgba(212,175,55,.35), rgba(255,255,255,.08));
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+    .logo span{ font-size: 18px; transform: translateY(1px); }
+    .titleWrap{ min-width:0; }
+    .titleWrap h1{
+      margin:0; font-size:16px; letter-spacing:.2px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .titleWrap .sub{
+      margin:2px 0 0; font-size:12px; color:var(--muted);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .rightControls{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background: var(--glass);
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .iconBtn{
+      width:40px; height:40px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      display:grid; place-items:center;
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,.18);
+      transition: transform .12s ease;
+      user-select:none;
+    }
+    .iconBtn:active{ transform: scale(.98); }
+    .toast{
+      position: fixed; left:50%; bottom:92px; transform: translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.10);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+      opacity:0; pointer-events:none;
+      transition: opacity .25s ease, transform .25s ease;
+      z-index: 999;
+    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-6px); }
+
+    main{
+      padding:14px;
+      padding-bottom:100px;
+      max-width:980px;
+      margin:0 auto;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+    @media (min-width: 900px){
+      .grid{ grid-template-columns: 1.15fr .85fr; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, var(--glass), var(--glass2));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:14px; letter-spacing:.2px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .tag{
+      font-size:11px; color:var(--muted);
+      border:1px solid var(--border);
+      padding:4px 8px;
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+      flex: 0 0 auto;
+    }
+    .hint{ font-size:12px; color:var(--muted); line-height:1.35; margin-top:10px; }
+    .divider{ height:1px; background: var(--border); margin:12px 0; }
+
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width: 480px){ .row{ grid-template-columns: 1fr; } }
+    .field{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
+    label{ font-size:12px; color:var(--muted); }
+    input[type="number"], input[type="text"], input[type="date"], select, textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background: var(--chip);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{ min-height:70px; resize: vertical; }
+
+    .checks{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:6px; }
+    @media (max-width: 520px){ .checks{ grid-template-columns: 1fr; } }
+    .check{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+    }
+    .check input{ transform: translateY(2px); }
+    .check strong{ font-size:13px; }
+    .check small{ display:block; color:var(--muted); font-size:11px; margin-top:2px; }
+
+    .scoreBox{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(212,175,55,.28);
+      background: rgba(212,175,55,.10);
+    }
+    .scoreBig{ font-size:28px; font-weight:900; letter-spacing:.4px; }
+    .scoreMeta{ color:var(--muted); font-size:12px; line-height:1.2; }
+    .scoreBadge{
+      padding:6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:16px;
+      cursor:pointer;
+      font-weight:800;
+      transition: transform .12s ease;
+      user-select:none;
+    }
+    button:active{ transform: scale(.98); }
+    button.primary{
+      border-color: rgba(212,175,55,.45);
+      background: linear-gradient(135deg, rgba(212,175,55,.22), rgba(255,255,255,.06));
+    }
+    button.danger{ border-color: rgba(255,80,80,.35); background: rgba(255,80,80,.12); }
+    button.ghost{ background: rgba(255,255,255,.03); }
+    .miniActions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .miniActions button{ padding:9px 10px; border-radius:14px; font-weight:700; font-size:12px; }
+
+    .kpi{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .kpi .box{
+      flex:1;
+      min-width: 145px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+    }
+    .kpi .box b{ display:block; font-size:14px; }
+    .kpi .box span{ display:block; font-size:11px; color:var(--muted); margin-top:2px; }
+
+    .list{ display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+    .item{
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      cursor:pointer;
+      transition: transform .08s ease;
+    }
+    .item:active{ transform: scale(.995); }
+    .item .left{ display:flex; flex-direction:column; gap:2px; }
+    .item .left b{ font-size:13px; }
+    .item .left span{ font-size:11px; color:var(--muted); }
+    .item .right{ font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+
+    .chartWrap{
+      border:1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      padding:10px;
+    }
+    canvas{ width:100%; height:220px; display:block; }
+
+    nav{
+      position:fixed; bottom:0; left:0; right:0;
+      background: linear-gradient(180deg, rgba(6,16,36,.20), rgba(6,16,36,.95));
+      border-top:1px solid var(--border);
+      padding:10px 14px;
+      display:flex; justify-content:center;
+      z-index: 20;
+    }
+    [data-theme="light"] nav{
+      background: linear-gradient(180deg, rgba(242,246,255,.20), rgba(242,246,255,.95));
+    }
+    .tabs{ width:100%; max-width:980px; display:flex; gap:10px; }
+    .tab{
+      flex:1;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      padding:12px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      font-weight:900;
+      user-select:none;
+      cursor:pointer;
+    }
+    .tab.active{
+      color: var(--text);
+      border-color: rgba(212,175,55,.35);
+      background: rgba(212,175,55,.12);
+    }
+
+    .modalOverlay{
+      position:fixed; inset:0;
+      display:none;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modalOverlay.show{ display:block; }
+    .modal{
+      max-width: 620px;
+      margin: 40px auto;
+      border:1px solid var(--border);
+      border-radius: 22px;
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    [data-theme="light"] .modal{
+      background: linear-gradient(180deg, var(--card), rgba(13,30,60,.02));
+    }
+    .modalTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom: 10px;
+    }
+    .modalTop h3{ margin:0; font-size: 14px; letter-spacing:.2px; }
+    .modalTop button{ padding: 8px 10px; border-radius: 14px; }
+
+    .muted{ color: var(--muted); font-size:12px; }
+
+  </style>
+</head>
+
+<body>
+  <div class="toast" id="toast">✅</div>
+
+  <header>
+    <div class="topline">
+      <div class="brand">
+        <div class="logo"><span>📌</span></div>
+        <div class="titleWrap">
+          <h1>Pasta do Emagrecimento</h1>
+          <p class="sub">Dashboard • Doses • Metas • Gráficos</p>
+        </div>
+      </div>
+
+      <div class="rightControls">
+        <div class="pill" id="todayPill">📅 --/--/----</div>
+        <div class="iconBtn" id="btnOpenSettings" title="Metas & Preferências">⚙️</div>
+        <div class="iconBtn" id="btnToggleTheme" title="Tema">🌓</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="screenDashboard">
+      <div class="grid">
+
+        <div class="card">
+          <h2>
+            <span>📊 Dashboard Diário</span>
+            <span class="tag" id="tagSprint">Sprint de Férias</span>
+          </h2>
+
+          <div class="row">
+            <div class="field">
+              <label>Data</label>
+              <input id="d_date" type="date" />
+            </div>
+            <div class="field">
+              <label>Peso (manhã) kg</label>
+              <input id="d_weight" type="number" step="0.1" placeholder="110.0" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Sono (horas)</label>
+              <input id="d_sleep" type="number" step="0.1" placeholder="7.5" />
+            </div>
+            <div class="field">
+              <label>Energia (0–10)</label>
+              <input id="d_energy" type="number" min="0" max="10" step="1" placeholder="8" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Fome (0–10)</label>
+              <input id="d_hunger" type="number" min="0" max="10" step="1" placeholder="3" />
+            </div>
+            <div class="field">
+              <label>Dor joelho/ombro (0–10)</label>
+              <input id="d_pain" type="number" min="0" max="10" step="1" placeholder="0" />
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <div class="field">
+              <label>Cardio (min)</label>
+              <input id="d_cardioMin" type="number" step="1" placeholder="60" />
+            </div>
+            <div class="field">
+              <label>Passos do dia</label>
+              <input id="d_steps" type="number" step="1" placeholder="10000" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Intensidade</label>
+            <select id="d_intensity">
+              <option value="leve">Leve</option>
+              <option value="moderada" selected>Moderada</option>
+              <option value="forte-controlada">Forte-controlada</option>
+            </select>
+          </div>
+
+          <div class="miniActions">
+            <button class="ghost" id="btnPlus15">+15 min cardio</button>
+            <button class="ghost" id="btnPlus30">+30 min cardio</button>
+            <button class="ghost" id="btnStepsGoal">📍 Pôr passos na meta</button>
+          </div>
+
+          <div class="checks">
+            <div class="check">
+              <input id="d_protein" type="checkbox" />
+              <div>
+                <strong>🥩 Proteína batida</strong>
+                <small>Segura massa magra</small>
+              </div>
+            </div>
+
+            <div class="check">
+              <input id="d_water" type="checkbox" />
+              <div>
+                <strong>💧 Água batida</strong>
+                <small>Meta do dia</small>
+              </div>
+            </div>
+
+            <div class="check">
+              <input id="d_strengthDay" type="checkbox" />
+              <div>
+                <strong>🏋️ Era dia de força</strong>
+                <small>Se não for, fica neutro</small>
+              </div>
+            </div>
+
+            <div class="check">
+              <input id="d_strengthDone" type="checkbox" />
+              <div>
+                <strong>✅ Força feita</strong>
+                <small>Patrimônio muscular</small>
+              </div>
+            </div>
+
+            <div class="check">
+              <input id="d_mobilityDone" type="checkbox" />
+              <div>
+                <strong>🧘 Mobilidade feita</strong>
+                <small>Seguro do joelho</small>
+              </div>
+            </div>
+
+            <div class="check">
+              <input id="d_snacks" type="checkbox" />
+              <div>
+                <strong>🍫 Teve belisco</strong>
+                <small>Marque se saiu do plano</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+            <div class="field">
+              <label>Refeições “limpas” (0–3)</label>
+              <input id="d_cleanMeals" type="number" min="0" max="3" step="1" value="0" />
+            </div>
+            <div class="field">
+              <label>Mobilidade (min)</label>
+              <input id="d_mobilityMin" type="number" step="1" placeholder="10" />
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <div class="field">
+              <label>Vitória do dia</label>
+              <input id="d_win" type="text" placeholder="Ex: bati passos e proteína" />
+            </div>
+            <div class="field">
+              <label>Ajuste de amanhã</label>
+              <input id="d_fix" type="text" placeholder="Ex: dormir mais cedo" />
+            </div>
+          </div>
+
+          <div class="scoreBox">
+            <div>
+              <div class="scoreMeta">📈 SCORE DO DIA</div>
+              <div class="scoreBig" id="scoreValue">0/100</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="scoreBadge" id="scoreBadge">Início</div>
+              <div class="scoreMeta" id="scoreBreakdown">
+                Cardio 0 • Passos 0 • Prot 0 • Água 0 • Força 0 • Sono 0
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="btnSaveDay">Salvar Dia</button>
+            <button id="btnLoadDay">Carregar Dia</button>
+            <button id="btnWeeklyReport">Gerar Relatório</button>
+            <button id="btnExportCSV">Exportar CSV</button>
+          </div>
+
+          <p class="hint">
+            📌 Regra simples: <b>80% do plano</b> vence no longo prazo. O corpo não aceita desculpa — só entrega.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>
+            <span>📌 Progresso</span>
+            <span class="tag" id="streakTag">Streak: 0</span>
+          </h2>
+
+          <div class="kpi">
+            <div class="box">
+              <b id="kpi_weight">-- kg</b>
+              <span>Peso (último)</span>
+            </div>
+            <div class="box">
+              <b id="kpi_delta">--</b>
+              <span>Variação (14 dias)</span>
+            </div>
+            <div class="box">
+              <b id="kpi_avgScore">--</b>
+              <span>Média score (7 dias)</span>
+            </div>
+            <div class="box">
+              <b id="kpi_cardioDays">--/7</b>
+              <span>Cardio (7 dias)</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="chartWrap">
+            <label style="display:block; margin-bottom:8px;">Gráfico (14 dias): Peso & Score</label>
+            <canvas id="chart" width="900" height="260"></canvas>
+            <div class="muted" id="chartCaption">—</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <label style="display:block; margin-bottom:8px;">Histórico (últimos 10)</label>
+          <div class="list" id="historyList"></div>
+
+          <div class="actions">
+            <button class="danger" id="btnResetAll">Zerar Tudo</button>
+            <button id="btnBackup">Backup</button>
+            <button id="btnRestore">Restaurar</button>
+          </div>
+
+          <p class="hint">
+            ✅ “Streak” conta quantos dias seguidos você manteve <b>score ≥ 80</b>. Simples. E cruelmente eficaz.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenSchedule" style="display:none;">
+      <div class="card">
+        <h2>
+          <span>💉 Cronograma de Doses</span>
+          <span class="tag">Sextas</span>
+        </h2>
+
+        <p class="hint">
+          Início fixo: <b>16/01/2026</b>. Você marca aplicado ✅ e o app guarda o histórico.
+        </p>
+
+        <div class="row">
+          <div class="field">
+            <label>Data de início</label>
+            <input id="s_start" type="date" />
+          </div>
+          <div class="field">
+            <label>Próximas doses (exibir)</label>
+            <input id="s_count" type="number" min="4" max="52" value="16" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="btnBuildSchedule">Gerar Cronograma</button>
+          <button class="danger" id="btnClearScheduleChecks">Limpar Marcações</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="list" id="doseList"></div>
+
+        <p class="hint">
+          📌 Primeiros 1–2 dias após dose: cardio mais leve + comida mais limpa.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <nav>
+    <div class="tabs">
+      <button class="tab active" id="tabDashboard">📊 Dashboard</button>
+      <button class="tab" id="tabSchedule">💉 Doses</button>
+    </div>
+  </nav>
+
+  <div class="modalOverlay" id="settingsOverlay">
+    <div class="modal">
+      <div class="modalTop">
+        <h3>⚙️ Metas & Preferências</h3>
+        <button class="ghost" id="btnCloseSettings">Fechar</button>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Meta de passos (dia)</label>
+          <input id="g_steps" type="number" min="1000" step="500" />
+        </div>
+        <div class="field">
+          <label>Meta de cardio (min)</label>
+          <input id="g_cardio" type="number" min="10" step="5" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Meta de sono (horas)</label>
+          <input id="g_sleep" type="number" min="4" max="10" step="0.5" />
+        </div>
+        <div class="field">
+          <label>Meta de refeições limpas</label>
+          <input id="g_meals" type="number" min="1" max="3" step="1" />
+        </div>
+      </div>
+
+      <div class="checks">
+        <div class="check">
+          <input id="g_neutralStrength" type="checkbox" />
+          <div>
+            <strong>Força neutra quando não é dia</strong>
+            <small>Recomendado (mantém score justo)</small>
+          </div>
+        </div>
+
+        <div class="check">
+          <input id="g_penalizeSnacks" type="checkbox" />
+          <div>
+            <strong>Penalizar belisco</strong>
+            <small>Leve ajuste no score</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="btnSaveGoals">Salvar Metas</button>
+        <button class="danger" id="btnResetGoals">Resetar Metas</button>
+      </div>
+
+      <p class="hint">
+        🎯 Metas bem calibradas = score que faz sentido. Score não é “emoção”: é “gestão”.
+      </p>
+    </div>
+  </div>
+
+  <input type="file" id="restoreFile" accept="application/json" style="display:none;" />
+
+  <script src="app.js"></script>
+</body>
+</html>
